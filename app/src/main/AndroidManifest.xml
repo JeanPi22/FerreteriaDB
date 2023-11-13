@@ -13,6 +13,18 @@
         android:theme="@style/Theme.FerreteriaDB"
         tools:targetApi="31">
         <activity
+            android:name=".FacturaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProductoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PedidoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UsuarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
