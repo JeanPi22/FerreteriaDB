@@ -92,8 +92,67 @@ public class UsuarioActivity extends AppCompatActivity {
             else {
                 Toast.makeText(this,"No se encontro usuario", Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(this, "Ingrese la identificación del usuario a buscar", Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    // METODO PARA EDITAR USUARIO
+    public void editarCliente(View view) {
+        //      Abrir base de datos
+        ConexionBD conexionBD = new ConexionBD(UsuarioActivity.this);
+        SQLiteDatabase baseDatos = conexionBD.getWritableDatabase();
+
+//      Variables donde se almacenaran los datos
+        String identificacion = etIdentificacion.getText().toString();
+        String nombre = etNombre.getText().toString();
+        String direccion = etDireccion.getText().toString();
+        String telefono = etTelefono.getText().toString();
+
+        if (!identificacion.isEmpty()) {
+            ContentValues valores = new ContentValues();
+            valores.put("nombre", nombre);
+            valores.put("direccion", direccion);
+            valores.put("telefono", telefono);
+
+            int filasActualizadas = baseDatos.update("Clientes", valores, "identificacion=?", new String[]{identificacion});
+
+            if (filasActualizadas > 0) {
+                Toast.makeText(this, "Usuario actualizado exitosamente", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "No se encontró usuario con esa identificación", Toast.LENGTH_LONG).show();
+            }
+
+//          Cerrar base de datos
+            baseDatos.close();
+        } else {
+            Toast.makeText(this, "Ingrese la identificación del usuario a editar", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // METODO PARA ELIMINAR USUARIO
+    public void eliminarCliente(View view) {
+        //      Abrir base de datos
+        ConexionBD conexionBD = new ConexionBD(UsuarioActivity.this);
+        SQLiteDatabase baseDatos = conexionBD.getWritableDatabase();
+
+        String identificacion = etIdentificacion.getText().toString();
+
+        if (!identificacion.isEmpty()) {
+            int filasEliminadas = baseDatos.delete("Clientes", "identificacion=?", new String[]{identificacion});
+
+            if (filasEliminadas > 0) {
+                Toast.makeText(this, "Usuario eliminado exitosamente", Toast.LENGTH_LONG).show();
+                limpiar();
+            } else {
+                Toast.makeText(this, "No se encontró usuario con esa identificación", Toast.LENGTH_LONG).show();
+            }
+//          Cerrar base de datos
+            baseDatos.close();
+        } else {
+            Toast.makeText(this, "Ingrese la identificación del usuario a eliminar", Toast.LENGTH_LONG).show();
+        }
     }
 
     //    Metodo para limpiar campos
