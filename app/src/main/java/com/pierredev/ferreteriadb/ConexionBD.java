@@ -12,13 +12,6 @@ public class ConexionBD extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NOMBRE = "Ferreteria.db";
 
-    //  Tablas de la base de datos
-    public static final String TABLE_CLIENTE = "t_cliente";
-    public static final String TABLE_FACTURA = "t_factura";
-    public static final String TABLE_PEDIDO = "t_pedido";
-    public static final String TABLE_PRODUCTO = "t_producto";
-    public static final String TABLE_PED_PROD = "t_ped_prod";
-
     //    Constructor Bd
     public ConexionBD(@Nullable Context context) {
         super(context, DATABASE_NOMBRE, null, DATABASE_VERSION);
@@ -28,36 +21,36 @@ public class ConexionBD extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase FerreteriaBD) {
 
-        FerreteriaBD.execSQL("CREATE TABLE " + TABLE_CLIENTE + "(" +
-                "cod_cli INTEGER PRIMARY KEY," +
+        FerreteriaBD.execSQL("CREATE TABLE Clientes (" +
+                "identificacion INT PRIMARY KEY," +
                 "nombre TEXT," +
                 "direccion TEXT," +
                 "telefono TEXT)");
 
-        FerreteriaBD.execSQL("CREATE TABLE " + TABLE_FACTURA + "(" +
-                "cod_fact INTEGER PRIMARY KEY," +
+        FerreteriaBD.execSQL("CREATE TABLE Factura (" +
+                "codigoFac INT PRIMARY KEY," +
                 "fecha TEXT," +
                 "valor REAL," +
-                "cod_cli2 INTEGER," +
-                "FOREIGN KEY (cod_cli2) REFERENCES " + TABLE_CLIENTE + "(cod_cli))");
+                "identificacion2 INT," +
+                "FOREIGN KEY (identificacion2) REFERENCES Clientes (identificacion))");
 
-        FerreteriaBD.execSQL("CREATE TABLE " + TABLE_PEDIDO + "(" +
-                "cod_ped INTEGER PRIMARY KEY," +
+        FerreteriaBD.execSQL("CREATE TABLE Pedido(" +
+                "codigoPed INT PRIMARY KEY," +
                 "descripcion TEXT," +
                 "fecha TEXT," +
-                "cod_cli1 INTEGER," +
-                "FOREIGN KEY (cod_cli1) REFERENCES " + TABLE_CLIENTE + "(cod_cli))");
+                "identificacion1 INT," +
+                "FOREIGN KEY (identificacion1) REFERENCES Clientes (identificacion))");
 
-        FerreteriaBD.execSQL("CREATE TABLE " + TABLE_PRODUCTO + "(" +
-                "cod_prod INTEGER PRIMARY KEY," +
+        FerreteriaBD.execSQL("CREATE TABLE Producto (" +
+                "codigoPro INT PRIMARY KEY," +
                 "fabricante TEXT," +
                 "valor REAL)");
 
-        FerreteriaBD.execSQL("CREATE TABLE " + TABLE_PED_PROD + "(" +
-                "cod_ped1 INTEGER," +
-                "cod_prod1 INTEGER," +
-                "FOREIGN KEY (cod_ped1) REFERENCES " + TABLE_PEDIDO + "(cod_ped)," +
-                "FOREIGN KEY (cod_prod1) REFERENCES " + TABLE_PRODUCTO + "(cod_prod))");
+        FerreteriaBD.execSQL("CREATE TABLE Ped_Pro (" +
+                "codigoPed1 INT," +
+                "codigoPro1 INT," +
+                "FOREIGN KEY (codigoPed1) REFERENCES Pedido (codigoPed)," +
+                "FOREIGN KEY (codigoPro1) REFERENCES Producto (codigoPro))");
     }
 
     @Override
