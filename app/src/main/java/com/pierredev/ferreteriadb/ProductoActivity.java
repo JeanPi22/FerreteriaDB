@@ -35,29 +35,43 @@ public class ProductoActivity extends AppCompatActivity {
         String valor = etValor.getText().toString();
 
 //      Solicitar a usuario que ingrese información en esas variables
-        if (!codigo.isEmpty() && !fabricante.isEmpty() && !valor.isEmpty()) {
-            ContentValues registro = new ContentValues();
-//
-//          Llevar registros de las variables a entidades de la tabla
-            registro.put("codigoPro", codigo);
-            registro.put("fabricante", fabricante);
-            registro.put("valor", valor);
-
-//          Insertar información a la table
-            BaseDatos.insert("Producto", null, registro);
-
-//          Cerrar base de datos
-            BaseDatos.close();
-
-//          Limpiar campos
-            limpiar();
-
-//          Mensaje de almacenamiento o error
-            Toast.makeText(this,"Registro Exito", Toast.LENGTH_LONG).show();
+        if (codigoProExiste(BaseDatos, codigo)) {
+            Toast.makeText(this, "El código del producto ya existe", Toast.LENGTH_LONG).show();
         }
         else {
-            Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            if (!codigo.isEmpty() && !fabricante.isEmpty() && !valor.isEmpty()) {
+                ContentValues registro = new ContentValues();
+//
+//              Llevar registros de las variables a entidades de la tabla
+                registro.put("codigoPro", codigo);
+                registro.put("fabricante", fabricante);
+                registro.put("valor", valor);
+
+//              Insertar información a la table
+                BaseDatos.insert("Producto", null, registro);
+
+//              Cerrar base de datos
+                BaseDatos.close();
+
+//              Limpiar campos
+                limpiar();
+
+//              Mensaje de almacenamiento o error
+                Toast.makeText(this,"Registro Exito", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            }
         }
+
+    }
+
+    // Método para verificar si el código de factura ya existe en la base de datos
+    private boolean codigoProExiste(SQLiteDatabase baseDatos, String codigoPro) {
+        Cursor cursor = baseDatos.rawQuery("SELECT * FROM Producto WHERE codigoPro = ?", new String[]{codigoPro});
+        boolean existe = cursor.getCount() > 0;
+        cursor.close();
+        return existe;
     }
 
     //  METODO PARA CONSULTAR PRODUCTO

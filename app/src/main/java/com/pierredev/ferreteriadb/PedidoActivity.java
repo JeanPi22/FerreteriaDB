@@ -38,30 +38,43 @@ public class PedidoActivity extends AppCompatActivity {
         String idCliente = etIdCliente.getText().toString();
 
 //      Solicitar a usuario que ingrese información en esas variables
-        if (!codigo.isEmpty() && !descripcion.isEmpty() && !fecha.isEmpty() && !idCliente.isEmpty()) {
-            ContentValues registro = new ContentValues();
-//
-//          Llevar registros de las variables a entidades de la tabla
-            registro.put("codigoPed", codigo);
-            registro.put("descripcion", descripcion);
-            registro.put("fecha", fecha);
-            registro.put("identificacion1", idCliente);
-
-//          Insertar información a la table
-            BaseDatos.insert("Pedido", null, registro);
-
-//          Cerrar base de datos
-            BaseDatos.close();
-
-//          Limpiar campos
-            limpiar();
-
-//          Mensaje de almacenamiento o error
-            Toast.makeText(this,"Registro Exito", Toast.LENGTH_LONG).show();
+        if (codigoPedExiste(BaseDatos, codigo)) {
+            Toast.makeText(this, "El código de pedido ya existe", Toast.LENGTH_LONG).show();
         }
         else {
-            Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            if (!codigo.isEmpty() && !descripcion.isEmpty() && !fecha.isEmpty() && !idCliente.isEmpty()) {
+                ContentValues registro = new ContentValues();
+//
+//              Llevar registros de las variables a entidades de la tabla
+                registro.put("codigoPed", codigo);
+                registro.put("descripcion", descripcion);
+                registro.put("fecha", fecha);
+                registro.put("identificacion1", idCliente);
+
+//              Insertar información a la table
+                BaseDatos.insert("Pedido", null, registro);
+
+//              Cerrar base de datos
+                BaseDatos.close();
+
+//              Limpiar campos
+                limpiar();
+
+//              Mensaje de almacenamiento o error
+                Toast.makeText(this,"Registro Exito", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    // Método para verificar si el código de factura ya existe en la base de datos
+    private boolean codigoPedExiste(SQLiteDatabase baseDatos, String codigoPed) {
+        Cursor cursor = baseDatos.rawQuery("SELECT * FROM Pedido WHERE codigoPed = ?", new String[]{codigoPed});
+        boolean existe = cursor.getCount() > 0;
+        cursor.close();
+        return existe;
     }
 
     //  METODO PARA CONSULTAR PEDIDO

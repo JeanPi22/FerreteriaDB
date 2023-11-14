@@ -38,30 +38,43 @@ public class FacturaActivity extends AppCompatActivity {
         String idCliente = etIdCliente.getText().toString();
 
 //      Solicitar a usuario que ingrese información en esas variables
-        if (!codigoFac.isEmpty() && !fecha.isEmpty() && !valor.isEmpty() && !idCliente.isEmpty()) {
-            ContentValues registro = new ContentValues();
-//
-//          Llevar registros de las variables a entidades de la tabla
-            registro.put("codigoFac", codigoFac);
-            registro.put("fecha", fecha);
-            registro.put("valor", valor);
-            registro.put("identificacion2", idCliente);
-
-//          Insertar información a la table
-            BaseDatos.insert("Factura", null, registro);
-
-//          Cerrar base de datos
-            BaseDatos.close();
-
-//          Limpiar campos
-            limpiar();
-
-//          Mensaje de almacenamiento o error
-            Toast.makeText(this,"Registro Exitos", Toast.LENGTH_LONG).show();
+        if (codigoFacExiste(BaseDatos, codigoFac)) {
+            Toast.makeText(this, "El código de factura ya existe", Toast.LENGTH_LONG).show();
         }
         else {
-            Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            if (!codigoFac.isEmpty() && !fecha.isEmpty() && !valor.isEmpty() && !idCliente.isEmpty()) {
+                ContentValues registro = new ContentValues();
+//
+//              Llevar registros de las variables a entidades de la tabla
+                registro.put("codigoFac", codigoFac);
+                registro.put("fecha", fecha);
+                registro.put("valor", valor);
+                registro.put("identificacion2", idCliente);
+
+//              Insertar información a la table
+                BaseDatos.insert("Factura", null, registro);
+
+//              Cerrar base de datos
+                BaseDatos.close();
+
+//              Limpiar campos
+                limpiar();
+
+//              Mensaje de almacenamiento o error
+                Toast.makeText(this,"Registro Exitos", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Ingrese correctamente todos los datos", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    // Método para verificar si el código de factura ya existe en la base de datos
+    private boolean codigoFacExiste(SQLiteDatabase baseDatos, String codigoFac) {
+        Cursor cursor = baseDatos.rawQuery("SELECT * FROM Factura WHERE codigoFac = ?", new String[]{codigoFac});
+        boolean existe = cursor.getCount() > 0;
+        cursor.close();
+        return existe;
     }
 
     //  METODO PARA CONSULTAR FACTURA
